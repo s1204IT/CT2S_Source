@@ -1,0 +1,86 @@
+comment "b52_camera sensor drivers"
+
+config B52_CAMERA_OV5642
+	tristate "OV5642 camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+	  This is a V4L2 camera driver for the ov5642 sensor
+
+config B52_CAMERA_OV13850
+	tristate "OV13850 camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+
+config B52_CAMERA_OV13850R2A
+tristate "OV13850R2A camera support"
+    depends on VIDEO_MMPISP_B52 && I2C
+    help
+      This is a V4L2 camera driver for OV13850R2A sensor
+
+config B52_CAMERA_IMX219
+	tristate "imx219 camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+	  This is a V4L2 camera driver for the imx219 sensor
+
+config B52_CAMERA_OV5648
+       tristate "OV5648 camera support"
+       depends on VIDEO_MMPISP_B52 && I2C
+       help
+        This is a V4L2 camera driver for the ov5648 sensor
+
+config B52_CAMERA_OV2680
+       tristate "OV2680 camera support"
+       depends on VIDEO_MMPISP_B52 && I2C
+       help
+        This is a V4L2 camera driver for the ov2680 sensor
+
+config B52_CAMERA_OV8858R1A
+	tristate "OV8858R1A camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+	 This is a V4L2 camera driver for the ov8858r1a sensor
+	 There're two versions of OV8858, one is OV8858R1A, another is
+	 OV8858R2A. We can identify they by reading the register 0x302a,
+	 if the value is 0xb1, it is the OV8858R1A, if the value is 0xb2,
+	 the value is OV8858R2A.
+
+config B52_CAMERA_OV8858R2A
+	tristate "OV8858R2A camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+	 This is a V4L2 camera driver for the ov8858r2a sensor
+
+config B52_CAMERA_S5K5E3
+    tristate "Samsung S5K5E3 camera support"
+    depends on VIDEO_MMPISP_B52 && I2C
+    help
+     This is a V4L2 camera driver for the S5K5E3 sensor
+
+config B52_CAMERA_S5K5E2
+    tristate "Samsung S5K5E2 camera support"
+    depends on VIDEO_MMPISP_B52 && I2C
+    help
+     This is a V4L2 camera driver for the S5K5E2 sensor
+
+config B52_CAMERA_OV5670AF
+	tristate "OV5670 camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+	 This is a V4L2 camera driver for the ov5670 sensor
+	 There're two modules of OV5670, AF module factory is SUNNY , FF module factory
+	 is OFILM. We can identify they by reading the i2c addr,
+	 if the value is 0x10, it is the FF OFILM module, if the value is 0x36,
+	 it is the AF SUNNY module.
+
+config B52_CAMERA_OV5670FF
+	tristate "OV5670 camera support"
+	depends on VIDEO_MMPISP_B52 && I2C
+	help
+	 This is a V4L2 camera driver for the ov5670 sensor
+
+config B52_CAMERA_OV2740
+    tristate "Ovt OV2740 camera support"
+    depends on VIDEO_MMPISP_B52 && I2C
+    help
+     This is a V4L2 camera driver for the OV2740 sensor

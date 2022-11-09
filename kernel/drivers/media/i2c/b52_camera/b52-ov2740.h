@@ -1,0 +1,347 @@
+/* Marvell ISP ov2740 Driver
+ *
+ * Copyright (C) 2009-2014 Marvell International Ltd.
+ *
+ * Based on mt9v011 -Micron 1/4-Inch VGA Digital Image ov2740
+ *
+ * Copyright (c) 2009 Mauro Carvalho Chehab (mchehab@redhat.com)
+ * This code is placed under the terms of the GNU General Public License v2
+ */
+
+#ifndef	B52_OV2740_H
+#define	B52_OV2740_H
+
+#include <media/b52-sensor.h>
+
+#define RG_Ratio_Typical 0x131
+#define BG_Ratio_Typical 0x11F
+
+struct regval_tab ov2740_res_init[] = {
+/*MIPI 10bit_1928x1088_30fps_2lanes_390 Mbps/lane*/
+	{0x0100, 0x00},
+	{0x0103, 0x01},
+	{0x0302, 0x1e},/*0x1c for 728 Mbps/lane, 0x1e for 390 Mbps/lane*/
+	{0x0303, 0x01},/*0x00 for 728Mbps/ lane, 0x01 for 390 Mbps/lane*/
+	{0x030d, 0x1c},
+	{0x030e, 0x02},
+	{0x0312, 0x01},
+	{0x3000, 0x00},
+	{0x3018, 0x32},
+	{0x3031, 0x0a},
+	{0x3080, 0x08},
+	{0x3083, 0xB4},
+	{0x3103, 0x00},
+	{0x3104, 0x01},
+	{0x3106, 0x01},
+	{0x3500, 0x00},
+	{0x3501, 0x44},
+	{0x3502, 0x40},
+	{0x3503, 0x98},
+	{0x3507, 0x00},
+	{0x3508, 0x00},
+	{0x3509, 0x80},
+	{0x350c, 0x00},
+	{0x350d, 0x80},
+	{0x3510, 0x00},
+	{0x3511, 0x00},
+	{0x3512, 0x20},
+	{0x3632, 0x00},
+	{0x3633, 0x10},
+	{0x3634, 0x10},
+	{0x3635, 0x10},
+	{0x3645, 0x13},
+	{0x3646, 0x81},
+	{0x3636, 0x10},
+	{0x3651, 0x0a},
+	{0x3656, 0x02},
+	{0x3659, 0x04},
+	{0x365a, 0xda},
+	{0x365b, 0xa2},
+	{0x365c, 0x04},
+	{0x365d, 0x1d},
+	{0x365e, 0x1a},
+	{0x3662, 0xd7},
+	{0x3667, 0x78},
+	{0x3669, 0x0a},
+	{0x366a, 0x92},
+	{0x3700, 0x54},
+	{0x3702, 0x10},
+	{0x3706, 0x42},
+	{0x3709, 0x30},
+	{0x370b, 0xc2},
+	{0x3714, 0x63},
+	{0x3715, 0x01},
+	{0x3716, 0x00},
+	{0x371a, 0x3e},
+	{0x3732, 0x0e},
+	{0x3733, 0x10},
+	{0x375f, 0x0e},
+	{0x3768, 0x30},
+	{0x3769, 0x44},
+	{0x376a, 0x22},
+	{0x377b, 0x20},
+	{0x377c, 0x00},
+	{0x377d, 0x0c},
+	{0x3798, 0x00},
+	{0x37a1, 0x55},
+	{0x37a8, 0x6d},
+	{0x37c2, 0x04},
+	{0x37c5, 0x00},
+	{0x37c8, 0x00},
+	{0x3800, 0x00},
+	{0x3801, 0x00},
+	{0x3802, 0x00},
+	{0x3803, 0x00},
+	{0x3804, 0x07},
+	{0x3805, 0x8f},
+	{0x3806, 0x04},
+	{0x3807, 0x47},
+	{0x3808, 0x07},
+	{0x3809, 0x88},
+	{0x380a, 0x04},
+	{0x380b, 0x40},
+	{0x380c, 0x08},/* HTS */
+	{0x380d, 0x20},/* 0x76 */
+	{0x380e, 0x04},/* VTS */
+	{0x380f, 0x8E},/* 0x60 */
+	{0x3810, 0x00},
+	{0x3811, 0x04},
+	{0x3812, 0x00},
+	{0x3813, 0x04},
+	{0x3814, 0x01},
+	{0x3815, 0x01},
+	{0x3820, 0x80},
+	{0x3821, 0x46},
+	{0x3822, 0x84},
+	{0x3829, 0x00},
+	{0x382a, 0x01},
+	{0x382b, 0x01},
+	{0x3830, 0x04},
+	{0x3836, 0x01},
+	{0x3837, 0x08},
+	{0x3839, 0x01},
+	{0x383a, 0x00},
+	{0x383b, 0x08},
+	{0x383c, 0x00},
+	{0x3f0b, 0x00},
+	{0x4001, 0x20},
+	{0x4009, 0x07},
+	{0x4003, 0x10},
+	{0x4010, 0xe0},
+	{0x4016, 0x00},
+	{0x4017, 0x10},
+	{0x4044, 0x02},
+	{0x4304, 0x08},
+	{0x4307, 0x30},
+	{0x4320, 0x80},
+	{0x4322, 0x00},
+	{0x4323, 0x00},
+	{0x4324, 0x00},
+	{0x4325, 0x00},
+	{0x4326, 0x00},
+	{0x4327, 0x00},
+	{0x4328, 0x00},
+	{0x4329, 0x00},
+	{0x432c, 0x03},
+	{0x432d, 0x81},
+	{0x4501, 0x84},
+	{0x4502, 0x40},
+	{0x4503, 0x18},
+	{0x4504, 0x04},
+	{0x4508, 0x02},
+	{0x4601, 0x10},
+	{0x4800, 0x00},
+	{0x4816, 0x52},
+	{0x4837, 0x16},
+	{0x5000, 0x7f},
+	{0x5001, 0x00},
+	{0x5005, 0x38},
+	{0x501e, 0x0d},
+	{0x5040, 0x00},
+	{0x5901, 0x00},
+	{0x3803, 0x04},
+	{0x3807, 0x43},
+	{0x3811, 0x08},
+	{0x3808, 0x07},
+	{0x3809, 0x80},
+	{0x380a, 0x04},
+	{0x380b, 0x38},
+};
+
+struct regval_tab ov2740_fmt_raw10[] = {
+};
+
+struct regval_tab ov2740_res_2M[] = {
+};
+
+struct regval_tab ov2740_id[] = {
+	{0x300A, 0x00, 0xff},
+	{0x300B, 0x27, 0xff},
+	{0x300C, 0x40, 0xff},
+};
+
+struct regval_tab ov2740_vts[] = {
+	{0x380E, 0x04, 0xff},
+	{0x380F, 0x8E, 0xff},
+};
+
+struct regval_tab ov2740_expo[] = {
+	{0x3500, 0x00, 0x0f},
+	{0x3501, 0x00, 0xff},
+	{0x3502, 0x00, 0xf0},
+};
+
+struct regval_tab ov2740_ag[] = {
+	{0x3508, 0x00, 0x0f},
+	{0x3509, 0x00, 0xff},
+};
+
+struct regval_tab ov2740_af[] = {
+};
+
+struct regval_tab ov2740_stream_on[] = {
+	{0x0100, 0x01, 0xff},
+};
+
+struct regval_tab ov2740_stream_off[] = {
+	{0x0100, 0x00, 0xff},
+};
+
+struct regval_tab ov2740_vflip[] = {
+	{0x3820, 0x80, 0xff},
+};
+
+struct regval_tab ov2740_hflip[] = {
+	{0x3821, 0x46, 0xff},
+};
+
+struct b52_sensor_i2c_attr ov2740_i2c_attr[] = {
+	[0] = {
+		.reg_len = I2C_16BIT,
+		.val_len = I2C_8BIT,
+		.addr = 0x10,
+	},
+};
+#define N_OV2740_I2C_ATTR ARRAY_SIZE(ov2740_i2c_attr)
+#define N_OV2740_INIT ARRAY_SIZE(ov2740_res_init)
+#define N_OV2740_ID ARRAY_SIZE(ov2740_id)
+#define N_OV2740_FMT_RAW10 ARRAY_SIZE(ov2740_fmt_raw10)
+#define N_OV2740_2M ARRAY_SIZE(ov2740_res_2M)
+#define N_OV2740_VTS ARRAY_SIZE(ov2740_vts)
+#define N_OV2740_EXPO ARRAY_SIZE(ov2740_expo)
+#define N_OV2740_AG ARRAY_SIZE(ov2740_ag)
+#define N_OV2740_AF ARRAY_SIZE(ov2740_af)
+#define N_OV2740_STREAM_ON ARRAY_SIZE(ov2740_stream_on)
+#define N_OV2740_STREAM_OFF ARRAY_SIZE(ov2740_stream_off)
+#define N_OV2740_HFLIP ARRAY_SIZE(ov2740_hflip)
+#define N_OV2740_VFLIP ARRAY_SIZE(ov2740_vflip)
+
+struct b52_sensor_mbus_fmt ov2740_fmt = {
+	.mbus_code	= V4L2_MBUS_FMT_SBGGR10_1X10,
+	.colorspace	= V4L2_COLORSPACE_SRGB,
+	.regs = {
+		.tab = ov2740_fmt_raw10,
+		.num = N_OV2740_FMT_RAW10,
+	}
+};
+struct b52_sensor_resolution ov2740_res[] = {
+	[0] = {
+		 .width = 1920,
+		 .height = 1080,
+		 .hts = 0x0820,
+		 .min_vts = 0x048E,
+		 .prop = SENSOR_RES_BINING1,
+		 .regs = {
+			.tab = ov2740_res_2M,
+			.num = N_OV2740_2M,
+		},
+	},
+};
+
+static int OV2740_get_pixelclock(struct v4l2_subdev *sd, u32 *rate, u32 mclk);
+static int OV2740_get_dphy_desc(struct v4l2_subdev *sd, struct csi_dphy_desc *dphy_desc, u32 mclk);
+static int OV2740_update_otp(struct v4l2_subdev *sd, struct b52_sensor_otp *otp);
+
+struct b52_sensor_spec_ops ov2740_ops = {
+	.get_pixel_rate = OV2740_get_pixelclock,
+	.get_dphy_desc = OV2740_get_dphy_desc,
+	.power_on = b52_sensor_power_on,
+	.update_otp  = OV2740_update_otp,
+};
+
+struct b52_sensor_data b52_ov2740 = {
+	.name = "ovt.ov2740",
+	.type = OVT_SENSOR,
+	.chip_ident = V4L2_IDENT_OV2740,
+	.i2c_attr = ov2740_i2c_attr,
+	.num_i2c_attr = N_OV2740_I2C_ATTR,
+	.id = {
+		.tab = ov2740_id,
+		.num = N_OV2740_ID,
+	},
+	.global_setting = {
+		.tab = ov2740_res_init,
+		.num = N_OV2740_INIT,
+	},
+	.mbus_fmt = &ov2740_fmt,
+	.num_mbus_fmt = 1,
+	.res = ov2740_res,
+	.num_res = 1,
+	.streamon = {
+		.tab = ov2740_stream_on,
+		.num = N_OV2740_STREAM_ON,
+	},
+	.streamoff = {
+		.tab = ov2740_stream_off,
+		.num = N_OV2740_STREAM_OFF,
+	},
+	.gain2iso_ratio = {
+		.numerator = 100,
+		.denominator = 0x10,
+	},
+	.vts_range = {0x048E, 0x7fff},
+	.gain_range = {
+		[B52_SENSOR_AG] = {0x0010, 0x00f7},
+		[B52_SENSOR_DG] = {0x0010, 0x0010},
+	},
+	.expo_range = {0x0010, 0x047E},/* VTS - 16 lines*/
+	.focus_range = {0x0000, 0x0000},
+
+	.vts_reg = {
+		.tab = ov2740_vts,
+		.num = N_OV2740_VTS,
+	},
+	.expo_reg = {
+		.tab = ov2740_expo,
+		.num = N_OV2740_EXPO,
+	},
+	.gain_reg = {
+		[B52_SENSOR_AG] = {
+			.tab = ov2740_ag,
+			.num = N_OV2740_AG,
+		},
+		[B52_SENSOR_DG] = {
+			.tab = NULL,
+			.num = 0,
+		},
+	},
+	.af_reg = {
+		.tab = ov2740_af,
+		.num = N_OV2740_AF,
+	},
+	.hflip = {
+		.tab = ov2740_hflip,
+		.num = N_OV2740_HFLIP,
+	},
+	.vflip = {
+		.tab = ov2740_vflip,
+		.num = N_OV2740_VFLIP,
+	},
+	.gain_shift = 3,
+	.calc_dphy = 1,
+	.nr_lane = 2,
+	.ops = &ov2740_ops,
+};
+
+#endif
+

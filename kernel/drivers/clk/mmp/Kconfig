@@ -1,0 +1,23 @@
+menuconfig MRVL_MMP_CLK_FULL_FEAT
+	bool "Marvell MMP Clock Full features"
+	depends on ARCH_MMP && COMMON_CLK
+	default y
+	help
+	  Enable full features of clock for Marvell MMP architecture.
+
+if MRVL_MMP_CLK_FULL_FEAT
+config PXA_DVFS
+	tristate "Enable DVFS feature"
+	depends on ARCH_MMP && COMMON_CLK
+	default y
+	help
+	  Enable Dynamic Voltage & Frequency Scaling feature.
+
+config PXA_DEBUG_MAX_VOLTAGE
+	bool "Enable Max Voltage Setting for Debug"
+	depends on PXA_DVFS
+	default n
+	help
+	  Use max voltage as vcc_main for debug popurse.
+
+endif

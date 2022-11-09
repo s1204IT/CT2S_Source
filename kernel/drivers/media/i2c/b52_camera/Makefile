@@ -1,0 +1,13 @@
+obj-$(CONFIG_B52_CAMERA_OV5642)		+= b52-ov5642.o
+obj-$(CONFIG_B52_CAMERA_OV13850)		+= b52-ov13850.o
+obj-$(CONFIG_B52_CAMERA_OV13850R2A)     += b52-ov13850r2a.o
+obj-$(CONFIG_B52_CAMERA_IMX219)		+= b52-imx219.o
+obj-$(CONFIG_B52_CAMERA_OV8858R1A)         += b52-ov8858r1a.o
+obj-$(CONFIG_B52_CAMERA_OV8858R2A)         += b52-ov8858r2a.o
+obj-$(CONFIG_B52_CAMERA_OV5648)         += b52-ov5648.o
+obj-$(CONFIG_B52_CAMERA_OV2680)         += b52-ov2680.o
+obj-$(CONFIG_B52_CAMERA_S5K5E3)         += b52-s5k5e3.o
+obj-$(CONFIG_B52_CAMERA_S5K5E2)         += b52-s5k5e2.o
+obj-$(CONFIG_B52_CAMERA_OV5670FF)         += b52-ov5670ff.o
+obj-$(CONFIG_B52_CAMERA_OV5670AF)         += b52-ov5670af.o
+obj-$(CONFIG_B52_CAMERA_OV2740)         += b52-ov2740.o

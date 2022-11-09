@@ -1,0 +1,44 @@
+/*
+ *  Copyright (C) 2014 Marvell Technology Group Ltd.
+ *  Author: Hongyan Song <hysong@marvell.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 2 as
+ *  publishhed by the Free Software Foundation.
+ */
+
+#include <dt-bindings/pmic/88pm860.h>
+/ {
+	soc {
+		apb@d4000000 {
+			twsi1: i2c@d4011000 {
+				pmic1: 88pm860@30 {
+				compatible = "marvell,88pm800";
+				/*
+				 * pmic board specific registers config,
+				 * use below form:
+				 * 	marvell,pmic-board-cfg = <page reg mask data>;
+				 */
+				marvell,pmic-board-cfg = <
+					PM860_BASE_PAGE
+					PM860_GPIO_0_1_CNTRL
+					(PM860_GPIO0_GPIO_MODE(7) | PM860_GPIO0_VAL)
+					(PM860_GPIO0_GPIO_MODE(4) | PM860_GPIO0_VAL)
+
+					/* XTAL Internal Capacitance */
+					PM860_BASE_PAGE
+					PM860_RTC_MISC6
+					PM860_RTC_MISC6_XO_CAP_SEL_MASK
+					PM860_RTC_MISC6_XO_CAP_12PF
+
+					PM860_POWER_PAGE
+					PM860_BUCK1_SLEEP
+					PM860_BUCK1_SLEEP_MASK
+					PM860_BUCK1_SLEEP_VOL_EDEN
+					 >;
+
+				};
+			};
+		};
+	};
+};

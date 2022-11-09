@@ -1,0 +1,29 @@
+/*
+ *  Copyright (C) 2014 Marvell Technology Group Ltd.
+ *  Author: Hongyan Song <hysong@marvell.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 2 as
+ *  publishhed by the Free Software Foundation.
+ */
+
+#include <dt-bindings/pmic/88pm822.h>
+
+/ {
+	soc {
+		apb@d4000000 {
+			twsi2: i2c@d4037000 {
+				pmic1: 88pm822@30 {
+				compatible = "marvell,88pm800";
+				/*
+				 * pmic board specific registers config,
+				 * use below form:
+				 * 	marvell,pmic-board-cfg = <page reg mask data>;
+				 */
+				marvell,pmic-board-cfg = <>;
+
+				};
+			};
+		};
+	};
+};

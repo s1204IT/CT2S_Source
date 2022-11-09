@@ -1,0 +1,506 @@
+/dts-v1/;
+#include "pxa1L88-dkb.dtsi"
+/ {
+	compatible = "mrvl,pxa1L88-tablet-l7-v10", "mrvl,pxa1L88";
+	aliases {
+			i2c3 = &gpio_i2c;
+		};
+	soc {
+		axi@d4200000 {	/* AXI */
+			dsi: dsi@d420b800 {
+				marvell,burst-mode = <0>;
+			};
+			disp: disp@d420b000 {
+				path1 {
+					marvell,y-mirror = <1>;
+					720p {
+						disp1_clksrc = "pll1_624";
+					};
+				};
+			};
+			usbphy: usbphy@d4207000 {
+				status = "okay";
+			};
+
+			ehci: ehci@d4208100 {
+				status = "okay";
+			};
+
+			otg: otg@d4208100 {
+				status = "okay";
+			};
+
+		};
+		apb@d4000000 {
+			pwm1: pwm@d401a000 {
+				compatible = "marvell,pxa25x-pwm";
+				reg = <0xd401a000 0x10>;
+				#pwm-cells = <2>;
+				status = "disabled";
+			};
+
+			pwm2: pwm@d401a400 {
+				compatible = "marvell,pxa25x-pwm";
+				reg = <0xd401a400 0x10>;
+				#pwm-cells = <2>;
+				status = "disabled";
+			};
+
+			pwm3: pwm@d401a800 {
+				compatible = "marvell,pxa25x-pwm";
+				reg = <0xd401a800 0x10>;
+				#pwm-cells = <2>;
+				status = "disabled";
+			};
+			pwm4: pwm@d401ac00 {
+				compatible = "marvell,pxa25x-pwm";
+				reg = <0xd401ac00 0x10>;
+				#pwm-cells = <2>;
+				status = "okay";
+			};
+			keypad: keypad@d4012000 {
+				status = "disabled";
+			};
+			keyreset {
+				status = "disabled";
+			};
+			gpio: gpio@d4019000 {
+				status = "okay";
+				/*
+				 * In theorical, some gpios could be routed to
+				 * multiple pins. So define the gpio-ranges in
+				 * board file, not silicon file.
+				 */
+				gcb0: gpio@d4019000 {
+					/* gpio offset, pin offset, nr pins */
+					gpio-ranges = <&pmx 0 55 32>;	/* GPIO[31:0] , GPIO0 ~ GPIO31 */
+				};
+				gcb1: gpio@d4019004 {
+					gpio-ranges = <&pmx 0 87 23>;	/* GPIO[63:32] , GPIO32 ~ GPIO54 */
+				};
+				gcb2: gpio@d4019008 {
+					gpio-ranges = <&pmx 3 110 29>;	/* GPIO[95:64] , GPIO67 ~ GPIO95 */
+				};
+				gcb3: gpio@d4019100 {
+					gpio-ranges = <&pmx 0 139 3  &pmx 4 142 1  &pmx 12 150 1  &pmx 27 51 3>;
+				};/*GPIO[127:96] , GPIO96 ~ GPIO98,GPIO100,GPIO108,GPIO123 ~ GPIO125 */
+			};
+			pmx: pinmux@d401e000 {
+				/* pin base, nr pins & gpio function */
+				pinctrl-single,gpio-range = <
+					/*
+					 * GPIO number is hardcoded for range at here.
+					 * In gpio chip, GPIO number is not hardcoded for range.
+					 * Since one gpio pin may be routed to multiple pins,
+					 * define these gpio range in pxa910-dkb.dts not pxa910.dtsi.
+					 */
+					&range 55 55 0	/* GPIO0 ~ GPIO54 */
+					&range 110 32 0 /* GPIO67 ~ GPIO98 */
+					&range 142 1 0	/* GPIO100 */
+					&range 150 1 0	/* GPIO108 */
+					&range 51 3 0	/* GPIO123 ~ GPIO125 */
+				>;
+				/* MFP_LPM_FLOAT */
+				mfp_pins_group_0: mfp_pins_group_0 {
+					pinctrl-single,pins = <
+						DF_IO8 AF4
+						DF_IO9 AF0
+						DF_IO10 AF0
+						DF_IO11 AF0
+						DF_IO12 AF0
+						DF_IO13 AF0
+						DF_IO14 AF0
+						DF_IO15 AF0
+						DF_WEn AF1
+						DF_REn AF1
+						DF_ALE_SM_WEn AF1
+						DF_RDY0 AF1
+					>;
+					MFP_LPM_FLOAT;
+				};
+				/* MFP_PULL_LOW && MFP_LPM_PULL_FLOAT */
+				mfp_pins_group_1: mfp_pins_group_1 {
+					pinctrl-single,pins = <
+						DF_nCS0_SM_nCS2 AF0
+						DF_nCS1_SM_nCS3 AF1
+						SM_nCS1 AF1
+						GPIO15 AF0
+					>;
+					DS_MEDIUM;PULL_DOWN;EDGE_NONE;LPM_FLOAT;
+				};
+				/* MFP_PULL_LOW && LPM_OUTPUT_DRIVE_LOW */
+				mfp_pins_group_2: mfp_pins_group_2 {
+					pinctrl-single,pins = <
+						GPIO1 AF0
+						GPIO16 AF0
+						GPIO18 AF0
+					>;
+					DS_MEDIUM;PULL_DOWN;EDGE_NONE;LPM_DRIVE_LOW;
+				};
+
+				/* MFP_PULL_LOW */
+				mfp_pins_group_3: mfp_pins_group_3 {
+					pinctrl-single,pins = <
+						GPIO70 AF0
+						GPIO97 AF0
+						GPIO36 AF0
+						GPIO43 AF0
+						GPIO44 AF0
+						GPIO50 AF0
+						GPIO90 AF0
+						GPIO92 AF0
+						GPIO98 AF0
+					>;
+					MFP_PULL_DOWN;
+				};
+
+				/* MFP_PULL_FLOAT && MFP_LPM_PULL_FLOAT */
+				mfp_pins_group_6: mfp_pins_group_6 {
+					pinctrl-single,pins = <
+						GPIO32 AF0
+						SM_ADVMUX AF1
+						/* LED_R_CTRL */
+						SM_BE1 AF0
+						/* LED_G_CTRL */
+						SM_nCS0 AF1
+						GPIO12 AF0
+					>;
+					DS_MEDIUM;PULL_FLOAT;EDGE_NONE;LPM_FLOAT;
+				};
+				/* MFP_DEFAULT */
+				mfp_pins_group_7: mfp_pins_group_7 {
+					pinctrl-single,pins = <
+						GPIO124 AF0
+						GPIO3 AF0
+						GPIO5 AF0
+						GPIO6 AF0
+						GPIO11 AF0
+						GPIO13 AF0
+						GPIO19 AF0
+						GPIO10 AF0
+						GPIO30 AF0
+						GPIO31 AF0
+						GPIO33 AF0
+						GPIO34 AF0
+						GPIO35 AF0
+						GPIO51 AF1
+						GPIO52 AF1
+						GPIO73 AF0
+						GPIO74 AF0
+						GPIO75 AF0
+						GPIO76 AF0
+						GPIO77 AF1
+					>;
+					MFP_DEFAULT;
+				};
+				usim1_pmx_func: usim1_pmx_func {
+					pinctrl-single,pins = <
+						GPIO49 AF0
+					>;
+					DS_MEDIUM;PULL_DOWN;EDGE_NONE;LPM_NONE;
+				};
+
+				usim1_pmx_func_sleep: usim1_pmx_func_sleep {
+					pinctrl-single,pins = <
+						GPIO49 AF0
+					>;
+					DS_MEDIUM;PULL_DOWN;EDGE_BOTH;LPM_NONE;
+				};
+			sensor_pmx_ctrl: sensor_pmx_ctrl {
+						pinctrl-single,pins = <
+							GPIO72 AF0
+						>;
+						DS_MEDIUM;PULL_UP;EDGE_NONE;LPM_NONE;
+				};
+			i2c_gpio: i2c_gpio {
+			pinctrl-single,pins = <
+							GPIO78 AF0
+							GPIO79 AF0
+						>;
+						DS_FAST;PULL_UP;EDGE_NONE;LPM_NONE;
+				};
+				touch_pins: touch_pins {
+					pinctrl-single,pins = <
+						GPIO17 AF0
+					>;
+					MFP_LPM_FLOAT;
+				};
+			};
+			usim1: usim@d4032000 {
+				compatible = "marvell,usim1";
+				pinctrl-names = "default", "sleep";
+				pinctrl-0 = <&usim1_pmx_func>;
+				pinctrl-1 = <&usim1_pmx_func_sleep>;
+				edge-wakeup-gpio = <49>; /* GPIO49: SIM detect pin */
+				status = "okay";
+				};
+			twsi0: i2c@d4011000 {
+				pinctrl-names = "default";
+				pinctrl-0 = <&twsi0_pmx_func>;
+				status = "okay";
+
+				touch1: s3202@720p {
+					status = "disabled";
+				};
+				touch2: s3202@1080p {
+					status = "disabled";
+				};
+				touch3: gt913@720p {
+					status = "disabled";
+				};
+				touch4: gt913@1080p {
+					status = "disabled";
+				};
+				gslx68x: gslx68x@40 {
+					compatible = "sliead,gslx68x-touch";
+					pinctrl-names = "default"; pinctrl-0 = <&touch_pins>;
+					reg = <0x40>;
+					gslx68x,abs-x-max = <800>;
+					gslx68x,abs-y-max = <1280>;
+					gslx68x,gsl-type = <0>;
+					avdd-supply = <&ldo10>;
+					reset-gpio = <&gpio 16 1>;
+					interrupt-parent = <&gpio>;
+					interrupts = <17 0x1>;
+				};
+			};
+			twsi1: i2c@d4010800 {
+				       status = "okay";
+
+					sensor1: isl29043@44 {
+					status = "disabled";
+				};
+					sensor2: bmp18x@77 {
+					status = "disabled";
+				};
+					sensor3: mpu9250@69 {
+					status = "disabled";
+				};
+					sensor4: apds9930@39 {
+					status = "disabled";
+				};
+
+			};
+			twsi2: i2c@d4037000 {
+				pmic1: 88pm822@30 {
+                                        headset {
+                                                marvell,headset-flag = <0>;
+                                        };
+                                };
+				pmic3: 88pm830@68 {
+					usb {
+						compatible = "marvell,88pm830-vbus";
+						gpadc-number = <1>;
+					};
+					battery {
+						bat-capacity = <3600>;	/* mAh */
+					};
+				};
+			};
+			backlight: pwm_bl {
+				compatible = "pwm-backlight";
+				pwms = <&pwm4 0 50000>;
+				brightness-levels = <0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54 56 58 60 62 64 66 68 70 72 74 76 78 80 82 84 86 88 90 92 94 96 98 100>;
+				default-brightness-level = <10>;
+			};
+		};
+		soc-isp {
+			couple-raw-sensor-support = <1>;
+			status = "okay";
+			backsensor {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				compatible = "marvell,backsensor";
+				status = "okay";
+				LSI3H7: sensor@1 {
+					compatible = "marvell,lsi3h7","marvell,sensor";
+					sensor-name = "lsi3h7";
+					reg = <0x10>;
+					adapter = <1>;
+					type = <1>;
+					interface = <0>;
+					af_2v8-supply = <&ldo10>;
+					avdd_2v8-supply = <&ldo11>;
+					dovdd_1v8-supply = <&voutsw>;
+					dvdd_1v2-supply = <&ldo12>;
+					status = "okay";
+					sensor_power {
+						pinctrl-names = "default";
+						pwdn-gpios = <&gpio 80 0>;
+						reset-gpios = <&gpio 67 0>;
+						pwdn-validvalue = <0>;
+						reset-validvalue = <0>;
+					};
+					sensor_id {
+						pid_addr = <0x0000 0x0001>;
+						pid_value = <0x30 0x87>;
+					};
+					torch_flash {
+						flash-gpios = <&gpio 18 0>;
+						torcht-gpios = <&gpio 12 0>;
+					};
+				};
+				OV8835: sensor@2 {
+					compatible = "marvell,ov8835","marvell,sensor";
+					sensor-name = "ov8835";
+					reg = <0x36>;
+					adapter = <1>;
+					type = <1>;
+					interface = <0>;
+					af_2v8-supply = <&ldo10>;
+					avdd_2v8-supply = <&ldo11>;
+					dovdd_1v8-supply = <&voutsw>;
+					dvdd_1v2-supply = <&ldo12>;
+					status = "okay";
+					sensor_power {
+						pinctrl-names = "default";
+						pwdn-gpios = <&gpio 80 0>;
+						reset-gpios = <&gpio 67 0>;
+						pwdn-validvalue = <0>;
+						reset-validvalue = <0>;
+					};
+					sensor_id {
+						pid_addr = <0x300a 0x300b>;
+						pid_value = <0x88 0x35>;
+					};
+					torch_flash {
+						flash-gpios = <&gpio 18 0>;
+						torcht-gpios = <&gpio 12 0>;
+					};
+				};
+				OV8825: sensor@3 {
+					compatible = "marvell,ov8825","marvell,sensor";
+					sensor-name = "ov8825";
+					reg = <0x36>;
+					adapter = <1>;
+					type = <1>;
+					interface = <0>;
+					af_2v8-supply = <&ldo10>;
+					avdd_2v8-supply = <&ldo11>;
+					dovdd_1v8-supply = <&voutsw>;
+					dvdd_1v2-supply = <&ldo12>;
+					status = "okay";
+					sensor_power {
+						pinctrl-names = "default";
+						pwdn-gpios = <&gpio 80 0>;
+						reset-gpios = <&gpio 67 0>;
+						pwdn-validvalue = <0>;
+						reset-validvalue = <0>;
+					};
+					sensor_id {
+						pid_addr = <0x300a 0x300b>;
+						pid_value = <0x88 0x25>;
+					};
+					torch_flash {
+						flash-gpios = <&gpio 18 0>;
+						torcht-gpios = <&gpio 12 0>;
+					};
+				};
+			};
+			frontsensor {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				compatible = "marvell,backsensor";
+				status = "disabled";
+			};
+		};
+
+		soc-camera@0 {
+			status = "disabled";
+		};
+
+		soc-camera@1 {
+			status = "disabled";
+		};
+		soc-camera@2 {
+			compatible = "soc-camera-pdrv";
+			reg = <0x2 0x0>;
+			status = "okay";
+		};
+	};
+	gpio_i2c:i2c@3 {
+		compatible = "i2c-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c_gpio>;
+		gpios = <&gpio 79 0	/* sda*/
+			&gpio 78 0	/* scl */
+			>;
+		i2c-gpio,delay-us = <2>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		stk3310@48 {
+		compatible = "sensortek,stk3310";
+		reg = <0x48>;
+		interrupt-parent = <&gpio>;
+		interrupts = <14 0x1>;
+		sensortek,irq-gpios = <&gpio 14 0x00>;
+		avdd-supply = <&ldo10>;
+		};
+		mpu6515@68 {
+		compatible = "invensense,mpu6515";
+		pinctrl-names = "default";
+                pinctrl-0 = <&sensor_pmx_ctrl>;
+		reg = <0x68>;
+		interrupt-parent = <&gpio>;
+		interrupts = <92 0x2>;
+		inven,irq-gpios = <&gpio 92 0x00>;
+		avdd-supply = <&ldo10>;
+		axis_map_x = <1>;
+		negate_x = <1>;
+		axis_map_y = <0>;
+		negate_y = <1>;
+		axis_map_z = <2>;
+		negate_z = <1>;
+		inven,secondary_axis_map_x = <0>;
+		inven,secondary_negate_x = <0>;
+		inven,secondary_axis_map_y = <1>;
+		inven,secondary_negate_y = <1>;
+		inven,secondary_axis_map_z = <2>;
+		inven,secondary_negate_z = <1>;
+		inven,secondary_type = "compass";
+		inven,secondary_name = "ak09911";
+		inven,secondary_reg = <0xc>;
+		};
+	};
+
+	panel1: lg4591 {
+		status = "disabled";
+	};
+
+	panel2: r63311 {
+		status = "disabled";
+	};
+
+	panel3: bp070wx1 {
+		compatible = "marvell,mmp-bp070wx1";
+		marvell,path-name = "mmp_pnpath";
+		marvell,ddrfreq-qos = <2>; /* DDR_CONSTRAINT_LVL1 */
+		x-mirror = <1>;
+		rst_gpio = <&gpio 4 0>;
+		avdd-supply = <&ldo10>;
+		power_gpio = <&gpio 108 0>;
+		bl_gpio = <&gpio 100 0>;
+		status = "okay";
+	};
+	keyboard: gpio_keys {
+		compatible = "gpio-keys";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		autorepeat;
+		button@20 {
+				label = "GPIO Key UP";
+				linux,code = <115>;
+				gpios = <&gpio 0 1>;
+			};
+		button@21 {
+				label = "GPIO Key Down";
+				linux,code = <114>;
+				gpios = <&gpio 2 1>;
+			};
+	};
+	led-rgb {
+		status = "disabled";
+	};
+};

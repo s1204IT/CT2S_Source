@@ -1,0 +1,142 @@
+menuconfig MARVELL_DRIVERS
+	bool "Marvell kernel module drivers"
+	---help---
+	marvell kernel module drivers
+
+if MARVELL_DRIVERS
+
+config MRVL_PANIC_FLUSH
+        tristate "PXA cache flush when panic"
+        depends on KEXEC
+	default y
+        ---help---
+          Enable support for flush all cache during panic
+
+config PXA_RAMDUMP
+	bool "RAMDUMP debug capability"
+	---help---
+	RAMDUMP saves the information about CPU and SoC state and
+	enables offline debug based on system RAM image (dump).
+	Can be used indepentently, or with KEXEC.
+	A memory map anchor structure RDC is used to store part
+	of the error information, and provide references to
+	extended information, where both can be located by an
+	offline parser without kernel symbol table use.
+
+config MRVL_SKMALLOC
+	tristate "Marvell Supper Kmalloc Driver"
+	default y
+	---help---
+	Create skmalloc-xxx like as kmalloc-xxx
+
+config SKMALLOC_REBOOT_NOTIFY
+	tristate "support changing skm_dbg_level by reboot cmd"
+	depends on MRVL_SKMALLOC && KEXEC
+	default y
+	---help---
+	If you want, you can change skm_dbg_level by reboot cmd,
+	like "reboot skm_dbg_level=2".
+
+config MRVL_SKMALLOC_WIRELESS_EN
+	tristate "marvell wireless driver use skmalloc"
+	depends on MRVL_SKMALLOC && MRVL_WIRELESS
+	default y
+	---help---
+	Whether marvell wireless driver uses Supper Kmalloc or not
+
+config MRVL_DEBUG
+	tristate "Support Marvell debug features"
+	default y
+	---help---
+	This will enable Marvell debug features.
+
+config MRVL_LOG
+	tristate "Support Marvell non-cacheable buffer"
+	default y
+	---help---
+	  This will enable Marvell non-cacheable buffer shared between kernel and bootloader.
+
+config MRVL_LOG_LAST_KMSG
+        bool "Marvell Use Mrvl Log as Last Kmsg"
+        depends on MRVL_LOG
+        default y
+        help
+           This feature creats a node to read contents of mmp_log_buf
+           area just before booting into kernel from bootloader.
+           This is very helpful to read mmp_log_buf area without reset
+           or entering upload mode.
+
+
+config MRVL_WIRELESS
+	bool "marvell wireless driver"
+	---help---
+	This enables the marvell wireless driver for application processor
+
+choice
+	depends on MRVL_WIRELESS
+	bool "Choose the chip for marvell wireless"
+	default MRVL_WL_SD8787_8777
+
+config MRVL_WL_SD8XXX
+	bool "SD8787/SD8777/SD8801/SD8887"
+	---help---
+	Marvell combo driver support: SD8787/SD8777/SD8801/SD8887 chips
+
+config MRVL_WL_SD8897
+	bool "SD8897"
+	---help---
+	Temporarily maintain SD8897 specifically, this item will be
+	removed when Marvell combo driver support SD8897
+
+endchoice
+
+config MRVL_WL_BUILD_TYPE
+	depends on MRVL_WL_SD8XXX || MRVL_WL_SD8897
+	tristate "Build type of the driver for MARVELL wireless"
+	default m
+	---help---
+	Choose <m> if you want to build the driver as module;
+	<y> to build-in kernel; <n> if you do not want to build.
+
+config MRVL_MMP_MODEM
+       tristate "Marvell mmp modem driver"
+       default n
+       help
+               marvell mmp modem driver for communication processor
+
+config MRVL_MMP_MODEM_V2
+       tristate "Marvell mmp modem v2 driver"
+       default n
+       help
+               marvell mmp modem v2 driver for communication processor
+
+config MRVL_GEU
+       tristate "Marvell driver for generic encrypt unit"
+       default n
+       help
+               driver for generic encrypt unit
+
+config MRVL_TZDD
+       tristate "Marvell Trust Zone Device Driver"
+       default n
+       help
+               Marvell Trust Execution Environment (TEE) Solution in non-trusted world
+
+config MRVL_MMP_CM3
+       tristate "Marvell CM3 resource manager driver"
+       default n
+       help
+               Marvell CM3 resource manager driver for PXA1U88
+
+config MRVL_SW_JTAG
+       tristate "Marvell software jtag driver"
+       default n
+       help
+               Marvell software jtag driver to simulate jtag access
+
+config MRVL_TDM
+       tristate "Marvell Trusted Diagnostic Module driver"
+       default n
+       help
+               Marvell TDM driver to kick tdm watchdog timer periodically
+endif

@@ -1,0 +1,126 @@
+#include "pxa1L88-ff-l55-v10.dts"
+/ {
+	compatible = "mrvl,pxa1L88-ff-l55-v20", "mrvl,pxa1L88";
+	aliases {
+			i2c3 = &gpio_i2c;
+		};
+
+	soc {
+		apb@d4000000 {
+			pmx: pinmux@d401e000 {
+				/* MFP_DEFAULT */
+				mfp_pins_group_7: mfp_pins_group_7 {
+					pinctrl-single,pins = <
+						GPIO124 AF0
+						GPIO1 AF0
+						GPIO3 AF0
+						GPIO5 AF0
+						GPIO6 AF0
+						GPIO10 AF0
+						GPIO11 AF0
+						GPIO12 AF0
+						GPIO13 AF0
+						GPIO19 AF0
+						GPIO20 AF0
+						GPIO30 AF0
+						GPIO31 AF0
+						GPIO32 AF0
+						GPIO33 AF0
+						GPIO34 AF0
+						GPIO35 AF0
+						GPIO49 AF0
+						GPIO50 AF0
+						GPIO51 AF1
+						GPIO52 AF1
+						GPIO73 AF0
+						GPIO74 AF0
+						GPIO75 AF0
+						GPIO76 AF0
+						GPIO77 AF1
+					>;
+					MFP_DEFAULT;
+				};
+
+				i2c_gpio: i2c_gpio {
+					pinctrl-single,pins = <
+						GPIO78 AF0
+						GPIO79 AF0
+					>;
+					DS_FAST;PULL_UP;EDGE_NONE;LPM_NONE;
+				};
+			};
+
+			twsi0: i2c@d4011000 {
+				touch3: gt913@720p {
+				/* cfg-group start from 0, so the value 2 means the third group */
+					goodix,cfg-group = <2>;
+				};
+				plsensor: tsl2x7x@39 {
+					status = "disabled";
+				};
+			};
+
+			twsi1: i2c@d4010800 {
+				sensor5: mpu6500@68 {
+					status = "disabled";
+				};
+			};
+		};
+	};
+
+	gpio_i2c:i2c@3 {
+		compatible = "i2c-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2c_gpio>;
+		gpios = <
+			&gpio 79 0	/* sda*/
+			&gpio 78 0	/* scl */
+		>;
+		i2c-gpio,delay-us = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		mpu6515@68 {
+			compatible = "invensense,mpu6515";
+			reg = <0x68>;
+			interrupt-parent = <&gpio>;
+			interrupts = <92 0x2>;
+			inven,irq-gpios = <&gpio 92 0x00>;
+			avdd-supply = <&ldo10>;
+			axis_map_x = <0>;
+			negate_x = <1>;
+			axis_map_y = <1>;
+			negate_y = <0>;
+			axis_map_z = <2>;
+			negate_z = <1>;
+			inven,secondary_axis_map_x = <0>;
+			inven,secondary_negate_x = <0>;
+			inven,secondary_axis_map_y = <1>;
+			inven,secondary_negate_y = <1>;
+			inven,secondary_axis_map_z = <2>;
+			inven,secondary_negate_z = <1>;
+			inven,secondary_type = "compass";
+			inven,secondary_name = "ak09911";
+			inven,secondary_reg = <0xc>;
+			status = "ok";
+		};
+
+		tsl2x7x@39 {
+			compatible = "taos,tmd27713";
+			reg = <0x39>;
+			interrupt-parent = <&gpio>;
+			interrupts = <14 0x1>;
+			irq-gpios = <&gpio 14 0>;
+			avdd-supply = <&ldo10>;
+		};
+	};
+	gps: mmp-gps {
+		vgps-supply = <&ldo13>;
+	};
+
+	led-rgb {
+		status = "disabled";
+	};
+};
+

@@ -1,0 +1,94 @@
+/*
+ *  Copyright (C) 2014 Marvell Technology Group Ltd.
+ *  Author: Hongyan Song <hysong@marvell.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 2 as
+ *  publishhed by the Free Software Foundation.
+ */
+
+#include <dt-bindings/pmic/88pm860.h>
+/ {
+	soc {
+		apb@d4000000 {
+			twsi1: i2c@d4011000 {
+				pmic1: 88pm860@30 {
+				compatible = "marvell,88pm800";
+				/*
+				 * pmic board specific registers config,
+				 * use below form:
+				 * 	marvell,pmic-board-cfg = <page reg mask data>;
+				 */
+				marvell,pmic-board-cfg = <
+
+					/* 32kHz Clock OUT */
+					PM860_BASE_PAGE
+					PM860_GPIO_0_1_CNTRL
+					(PM860_GPIO0_GPIO_MODE(7) | PM860_GPIO0_VAL)
+					(PM860_GPIO0_GPIO_MODE(4) | PM860_GPIO0_VAL)
+
+					/* HW Reset 1 */
+					PM860_BASE_PAGE
+					PM860_GPIO_0_1_CNTRL
+					(PM860_GPIO1_GPIO_MODE(7) | PM860_GPIO1_VAL)
+					(PM860_GPIO1_GPIO_MODE(6) | PM860_GPIO1_VAL)
+
+					/* RFPA */
+					PM860_BASE_PAGE
+					PM860_GPIO_2_3_CNTRL
+					(PM860_GPIO2_GPIO_MODE(7) | PM860_GPIO2_VAL)
+					(PM860_GPIO2_GPIO_MODE(2) | PM860_GPIO2_VAL)
+
+					/* XTAL Internal Capacitance */
+					PM860_BASE_PAGE
+					PM860_RTC_MISC6
+					PM860_RTC_MISC6_XO_CAP_SEL_MASK
+					PM860_RTC_MISC6_XO_CAP_18PF
+
+					/* BUCK1 */
+					PM860_POWER_PAGE
+					PM860_BUCK1_SLEEP
+					PM860_BUCK1_SLEEP_MASK
+					PM860_BUCK1_SLEEP_VOL_EDEN
+
+					/* BUCK6 ACTIVE VOLTAGE */
+					PM860_POWER_PAGE
+					PM860_BUCK6
+					PM860_BUCK6_VOL_MASK
+					PM860_BUCK6_VOL_1p5
+
+					/* BUCK6 MISC 3 */
+					PM860_POWER_PAGE
+					PM860_BUCK6_MISC_3
+					0xff
+					/*
+					 * this register control miscellaneous
+					 * options for buck6.
+					 * this configuration set it as follows:
+					 * format: bit#(field_name)=field_value
+					 *	description
+					 * b0(BK6_EN_PFMCMP_PWM_B)=0
+					 *	PFMCMP is enabled in PWM mode
+					 * b1(BK6_SHORT_PFM_OFFTIME)=1
+					 *	short PFM short time of 30[nsec]
+					 * b2(BK6_PFMCMP_DLY)=0
+					 *	PFM comparator delay of 16[nsec]
+					 * b3(BK6_DVC_PWM)=1
+					 *	PWM mode enabled during DVC transient
+					 * b4(BK6_EN_DISCHG)=0
+					 *	internal discharge resistor disconnected
+					 * b5(BK6_EN_OOVP)=0
+					 *	over voltage protection disabled
+					 * b6(BK6_PFM_XP)=0
+					 *	buck output voltage positioninig by 1% in PFM disabled
+					 * b7(BK6_HPFM)=0
+					 *	if LPFM=1: 800[mA] else 400[mA]
+					 */
+					(PM860_BUCK6_MISC_3_SHORT_PFM_OFFTIME | PM860_BUCK6_MISC_3_DVC_PWM)
+					>;
+
+				};
+			};
+		};
+	};
+};
